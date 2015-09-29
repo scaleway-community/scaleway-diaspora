@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+update-rc.d disapora defaults
+

@@ -1,0 +1,48 @@
+#  Diaspora
+#
+# chkconfig: 345 91 10
+# description: Starts and stops the Diaspora daemon.
+#
+
+PROC_NAME=Diaspora
+DIASPORA_HOME=/home/diaspora/diaspora
+RUN_AS_USER=diaspora
+
+startup="cd $DIASPORA_HOME; source $DIASPORA_HOME/../.rvm/scripts/rvm; RAILS_ENV=production DB=postgres ./script/server"
+
+start() {
+	echo -n $"Starting $PROC_NAME service: "
+	su -l $RUN_AS_USER -c "$startup"
+	RETVAL=$?
+	echo
+}
+
+stop() {
+	echo -n $"Stoping $PROC_NAME service: "
+	RETVAL=$?
+	echo
+}
+
+restart() {
+	stop
+	start
+}
+
+
+# See how we were called.
+case "$1" in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		restart
+	;;
+	*)
+		echo $"Usage: $0 {start|stop|restart}"
+		exit 1
+		esac
+
+exit 0
