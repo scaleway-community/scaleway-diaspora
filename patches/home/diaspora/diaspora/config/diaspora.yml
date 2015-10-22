@@ -36,7 +36,7 @@ configuration: ## Section
     ## However changing http to https is okay and has no consequences.
     ## If you do change the URL, you will have to start again as the URL
     ## will be hardcoded into the database.
-    url: "https://{server_name}/"
+    url: "https://localhost/"
 
     ## Set the bundle of certificate authorities (CA) certificates.
     ## This is specific to your operating system.
@@ -631,7 +631,7 @@ configuration: ## Section
     enable: true
 
     ## Sender address used in mail sent by Diaspora.
-    sender_address: 'no-reply@{server_name}'
+    sender_address: 'no-reply@localhost'
 
     ## This selects which mailer should be used. Use 'smtp' for a smtp
     ## connection, 'sendmail' to use the sendmail binary or
