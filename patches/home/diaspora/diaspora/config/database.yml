@@ -20,8 +20,8 @@ postgres: &postgres
 # if you want to use postgres
 common: &common
   # Choose one of the following
-  #<<: *mysql
-  <<: *postgres
+  <<: *mysql
+  #<<: *postgres
 
   # Should match environment.sidekiq.concurrency
   #pool: 25

@@ -36,7 +36,7 @@ configuration: ## Section
     ## However changing http to https is okay and has no consequences.
     ## If you do change the URL, you will have to start again as the URL
     ## will be hardcoded into the database.
-    #url: "https://example.org/"
+    url: "https://{server_name}/"
 
     ## Set the bundle of certificate authorities (CA) certificates.
     ## This is specific to your operating system.
@@ -165,7 +165,7 @@ configuration: ## Section
     ## Where the appserver should listen to (default=unix:tmp/diaspora.sock)
     #listen: 'unix:tmp/diaspora.sock'
     #listen: 'unix:/run/diaspora/diaspora.sock'
-    #listen: '127.0.0.1:3000'
+    listen: '127.0.0.1:3000'
 
     ## Set the path for the PID file of the unicorn master process (default=none)
     #pid: '/run/diaspora/diaspora.pid'
@@ -196,7 +196,7 @@ configuration: ## Section
     ## Number of Sidekiq worker processes (default=1).
     ## In most cases it is better to
     ## increase environment.sidekiq.concurrency instead!
-    #sidekiq_workers: 1
+    sidekiq_workers: 4
 
   ## Diaspora has an internal XMPP server. If you want to enable the chat
   ## functionality or want to use a custom XMPP server, then you should edit
@@ -505,7 +505,7 @@ configuration: ## Section
 
       ## Enable captcha (default=true)
       ## Set this to false if you don't want to use captcha for signup process.
-      #enable: true
+      enable: false
 
       ## Captcha image size (default='120x20')
       #image_size: '120x20'
@@ -628,15 +628,15 @@ configuration: ## Section
   mail: ## Section
 
     ## First you need to enable it.
-    #enable: true
+    enable: true
 
     ## Sender address used in mail sent by Diaspora.
-    #sender_address: 'no-reply@example.org'
+    sender_address: 'no-reply@{server_name}'
 
     ## This selects which mailer should be used. Use 'smtp' for a smtp
     ## connection, 'sendmail' to use the sendmail binary or
     ## 'messagebus' to use the messagebus service.
-    #method: 'smtp'
+    method: 'sendmail'
 
     ## Ignore if method isn't 'smtp'.
     smtp: ## Section
@@ -673,10 +673,10 @@ configuration: ## Section
     sendmail: ## Section
 
       ## The path to the sendmail binary (default='/usr/sbin/sendmail')
-      #location: '/usr/sbin/sendmail'
+      location: '/usr/sbin/sendmail'
 
       ## Use exim and sendmail (default=false)
-      #exim_fix: false
+      exim_fix: false
 
     ## Ignore if method isn't 'messagebus'
     #message_bus_api_key: 'abcdef'

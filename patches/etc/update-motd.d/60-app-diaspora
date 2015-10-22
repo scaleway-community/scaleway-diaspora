@@ -8,5 +8,7 @@ Welcome to the Diaspora InstantApp.
 The Diaspora app is in /home/diaspora/diaspora and online at http://${PUBLIC_IP}/
 Useful links:
 - https://github.com/scaleway-community/scaleway-diaspora
+MySQL is configured for user root with password {mysql_root_password}.
 Enjoy!
 EOF
+

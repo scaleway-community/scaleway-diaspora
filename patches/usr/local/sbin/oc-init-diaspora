@@ -1,4 +1,50 @@
 #!/usr/bin/env bash
 
-update-rc.d disapora defaults
+export DEBIAN_FRONTEND=noninteractive
 
+MYSQL_ROOT_PASSWORD=$(head /dev/urandom -c 512 | sha1sum | awk '// { print $1; }')
+
+# Set correct permission to mysql user
+chown -R mysql:mysql /var/lib/mysql
+
+# MOTD & README
+sed -i "s/{mysql_root_password}/$MYSQL_ROOT_PASSWORD/" /etc/update-motd.d/60-app-diaspora
+sed -i "s/password:.*/password: '$MYSQL_ROOT_PASSWORD'/g" /home/diaspora/diaspora/config/database.yml
+
+# Configure Nginx
+sed -i "s/{server_name}/$(/usr/local/bin/oc-metadata --cached ID).pub.cloud.scaleway.com/g" /etc/nginx/sites-available/diaspora
+
+# Configure diaspora
+sed -i "s/{server_name}/$(/usr/local/bin/oc-metadata --cached ID).pub.cloud.scaleway.com/g" /home/diaspora/diaspora/config/diaspora.yml
+
+# Configure postfix
+sed -i "s/mydestination = .*/mydestination = $(/usr/local/bin/oc-metadata --cached ID).pub.cloud.scaleway.com, localhost.localdomain, localhost/g" /etc/postfix/main.cf
+sed -i "s/myhostname = .*/myhostname = $(/usr/local/bin/oc-metadata --cached ID).pub.cloud.scaleway.com/g" /etc/postfix/main.cf
+sed -i "s/inet_interfaces = .*/inet_interfaces = localhost/g" /etc/postfix/main.cf
+postfix -c /etc/postfix/ set-permissions
+chown -R root:postdrop /usr/sbin/postqueue
+chown -R root:postdrop /usr/sbin/postdrop
+chmod g+s /usr/sbin/postqueue /usr/sbin/postdrop
+/etc/initd.d/postfix start
+
+# Fix redis perms
+chown -R redis:adm /var/log/redis
+/etc/initd.d/redis-server start
+
+# Configure SSL
+mkdir -p /etc/nginx/ssl
+
+if [ ! -f /etc/nginx/ssl/nginx.crt -o ! -f /etc/nginx/ssl/nginx.key ];
+then
+    (echo FR; echo France; echo Paris; echo Scaleway; echo Scaleway Cloud; echo $(/usr/local/bin/oc-metadata --cached PUBLIC_IP_ADDRESS); echo ;) | openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt 2>/dev/null >/dev/null
+    /etc/init.d/nginx restart
+fi
+
+# Configure MySQL
+chmod 1777 /tmp
+/etc/init.d/mysql start
+mysqladmin -u root password $MYSQL_ROOT_PASSWORD
+
+# this service is only needed on the first boot so we remove it here.
+rm -f /etc/init/init-diaspora.conf
+rm -f /usr/local/sbin/oc-init-diaspora
