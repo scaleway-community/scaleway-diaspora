@@ -4,9 +4,8 @@ VERSION_ALIASES =
 TITLE =			diaspora*
 DESCRIPTION =		The online social world where you are in control
 SOURCE_URL =		https://github.com/scaleway-community/scaleway-diaspora
-DOC_URL =		
+# DOC_URL =		
 VENDOR_URL =		https://diasporafoundation.org/
-IMAGE_VOLUME_SIZE =	50G
 
 IMAGE_VOLUME_SIZE =	50G
 IMAGE_BOOTSCRIPT =	stable
